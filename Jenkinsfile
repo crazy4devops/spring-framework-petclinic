@@ -87,16 +87,6 @@ pipeline {
             }
         }
     }
-    post {
-        aborted{
-           slackSend channel: '# jenkins-batch-ii', message: "*ABORTED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}", teamDomain: 'crazy4devops', tokenCredentialId: 'slack-notify'
-        }
-        failure {
-             slackSend channel: '# jenkins-batch-ii', message: "*FAILIED:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}", teamDomain: 'crazy4devops', tokenCredentialId: 'slack-notify'
-        }
-        success{
-            slackSend channel: '# jenkins-batch-ii', message: "*SUCCESS:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}", teamDomain: 'crazy4devops', tokenCredentialId: 'slack-notify'
-        }
         always { 
             cleanWs()
         }
