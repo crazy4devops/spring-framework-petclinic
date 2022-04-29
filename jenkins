@@ -1,0 +1,42 @@
+pipeline{
+    agent any
+    stages{
+        stage("git code"){
+            steps{
+                git url: "https://github.com/kallepallinaveen/spring-framework-petclinic.git", branch:"prod"
+            }
+
+        }
+        stage("build code"){
+            steps{
+                sh "mvn clean install"
+
+            }
+
+        }
+        stage("test code"){
+            steps{
+                sh "mvn test"
+
+            }
+
+        }
+        stage("Sonarqube Analysis"){
+            environment {
+              def scannerHome = tool 'SonarQube Scanner 2.4'
+            }
+            steps{  
+                withSonarQubeEnv('sonarqube-scanner'){
+                   sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+                 sleep time: 30000, unit: 'MILLISECONDS'
+                script {
+                        def qg = waitForQualityGate()
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                }
+            }
+        }
+    }
+}
